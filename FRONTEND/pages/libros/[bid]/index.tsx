@@ -1,8 +1,9 @@
 import Link from "next/link";
 
-export async function getStaticProps(ctx: { params: { bid: any; }; }) {
-   // const {bid} = ctx.params;
-    const res = await fetch(`http://127.0.0.1:8000/api/libros/${ctx.params.bid}`);
+export async function getStaticProps({params}) {
+    //console.log(context.params.bid);
+    // const {bid} = ctx.params;
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/libros/${params.bid}`);
     const data = await res.json();
     //console.log(data);
     return {
@@ -13,22 +14,22 @@ export async function getStaticProps(ctx: { params: { bid: any; }; }) {
 }
 
 export async function getStaticPaths() {
-    const res = await fetch('http://127.0.0.1:8000/api/libros/');
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/libros`);
     const data = await res.json();
 
     return {
         paths: data.map(book => ({
-            params: {bid: String(book.id)},
+            params: {bid: String(book.id)}
         })),
         fallback: false
     }
 }
 
-// @ts-ignore
 const BookDetail = ({book}) => {
+    console.log(book);
     return (
         <div>
-            <h1>{book.title_book}</h1>
+            <h1>Titulo: {book.title_book}</h1>
             <Link href="/libros">Book List</Link>
         </div>
     )
